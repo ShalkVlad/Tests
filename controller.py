@@ -28,6 +28,7 @@ tasks = [
 def index():
     return render_template('site.html')
 
+
 @app.route('/tasks', methods=['GET'])
 def get_filtered_tasks():
     sort_type = request.args.get('sort', 'asc')  # Default to ascending order
