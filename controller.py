@@ -28,6 +28,21 @@ tasks = [
 def index():
     return render_template('site.html')
 
+@app.route('/tasks', methods=['GET'])
+def get_filtered_tasks():
+    sort_type = request.args.get('sort', 'asc')  # Default to ascending order
+    filter_priority = request.args.get('priority', '')
+
+    # Filter tasks based on priority
+    filtered_tasks = tasks
+    if filter_priority:
+        filtered_tasks = [task for task in tasks if task.get('priority') == filter_priority]
+
+    # Sort tasks based on creation_date
+    sorted_tasks = sorted(filtered_tasks, key=lambda x: x['creation_date'], reverse=(sort_type == 'desc'))
+
+    return jsonify({'tasks': sorted_tasks})
+
 
 @app.route('/tasks', methods=['POST'])
 def create_task() -> Response:
