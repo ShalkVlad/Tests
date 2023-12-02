@@ -8,10 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterPrioritySelect = document.getElementById('filterPriority');
 
     // Function to update the task list
-    function updateTaskList() {
-        fetch('/tasks')
-            .then(response => response.json())
-            .then(data => {
+   function updateTaskList() {
+    const sortType = sortTypeSelect.value;
+    const filterPriority = filterPrioritySelect.value;
+
+    fetch(`/tasks?sort=${sortType}&priority=${filterPriority}`)
+        .then(response => response.json())
+        .then(data => {
                 taskListElement.innerHTML = '';
 
                 // Check if the response contains a 'tasks' property
