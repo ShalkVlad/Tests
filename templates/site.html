@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Список задач</title>
+</head>
+
+<body>
+    <h1>Список задач</h1>
+
+    <label for="taskId">Помочь найти задачу? Укажите номер:</label>
+    <input type="number" id="taskId" name="taskId" required>
+    <button type="button" id="searchTaskButton">Найти задачу</button>
+    <div id="searchResult"></div>
+
+    <div id="sortContainer">
+        <label for="sortType">Сортировать по дате:</label>
+        <select id="sortType" name="sortType">
+            <option value="asc">По возрастанию</option>
+            <option value="desc" id="applySortButton">По убыванию</option>
+        </select>
+
+        <label for="filterPriority">Фильтр по приоритету:</label>
+        <select id="filterPriority" name="filterPriority">
+            <option value="">Все</option>
+            <option value="low">Низкий</option>
+            <option value="medium">Средний</option>
+            <option value="high">Высокий</option>
+        </select>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <form id="addTaskForm">
+        <label for="title">Название задачи:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Описание задачи:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="categories">Категории:</label>
+        <input type="text" id="categories" name="categories">
+
+        <label for="fileAttachment">Прикрепить файл:</label>
+        <input type="file" id="fileAttachment" name="fileAttachment">
+
+        <label for="priority">Приоритет выполнения:</label>
+        <select id="priority" name="priority">
+            <option value="low">Низкий</option>
+            <option value="medium">Средний</option>
+            <option value="high">Высокий</option>
+        </select>
+
+        <button type="submit">Добавить задачу</button>
+    </form>
+<form id="editTaskForm">
+    <h2>Редактировать задачу</h2>
+
+    <label for="editTitle">Название задачи:</label>
+    <input type="text" id="editTitle" name="editTitle" required>
+
+    <label for="editDescription">Описание задачи:</label>
+    <textarea id="editDescription" name="editDescription" required></textarea>
+
+    <label for="editCategories">Категории:</label>
+    <input type="text" id="editCategories" name="editCategories">
+
+    <label for="editFileAttachment">Прикрепить файл:</label>
+    <input type="file" id="editFileAttachment" name="editFileAttachment">
+
+    <label for="editPriority">Приоритет выполнения:</label>
+    <select id="editPriority" name="editPriority">
+        <option value="low">Низкий</option>
+        <option value="medium">Средний</option>
+        <option value="high">Высокий</option>
+    </select>
+
+    <button type="button" id="updateTaskButton">Сохранить изменения</button>
+</form>
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+</body>
+
+</html>

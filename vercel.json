@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "controller.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/controller.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production",
+    "FLASK_APP": "controller.py"
+  }
+}
