@@ -1,4 +1,0 @@
-build:
-  image: python:3.12
-release:
-  command: python controller.py
