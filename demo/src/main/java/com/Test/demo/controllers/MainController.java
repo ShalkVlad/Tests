@@ -1,31 +1,31 @@
+
 package com.Test.demo.controllers;
 
 import com.Test.demo.controllers.models.Task;
-import com.Test.demo.controllers.services.TaskService;
 import com.Test.demo.controllers.services.PdfConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.Test.demo.controllers.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+import static com.Test.demo.controllers.services.TaskService.logger;
+
+@RestController
 @RequestMapping("/")
 public class MainController {
 
     private final TaskService taskService;
     private final FileService fileService;
     private final PdfConverter pdfConverter;
-    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     public MainController(TaskService taskService, FileService fileService, PdfConverter pdfConverter) {
@@ -39,6 +39,12 @@ public class MainController {
                 .map(this::handleSinglePdfUpload)
                 .collect(Collectors.toList());
     }
+    private List<Task> createSampleTasks() {
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(new Task(1, "Sample Task 1", "2023-01-01", "Description 1", "", ""));
+        tasks.add(new Task(2, "Sample Task 2", "2023-01-02", "Description 2", "", ""));
+        return tasks;
+    }
 
     @PostMapping("/uploadPdf/{taskId}")
     public ResponseEntity<String> uploadPdf(@PathVariable int taskId, @RequestParam("pdfFile") MultipartFile pdfFile) {
@@ -49,13 +55,8 @@ public class MainController {
                 return ResponseEntity.notFound().build();
             }
 
-            // Handling PDF upload
             String pdfPath = fileService.saveFile(pdfFile);
-
-            // Converting PDF to images
             List<String> imagePaths = pdfConverter.convertPdfToImages(pdfPath);
-
-            // Associating images with the task
             task.setPdfAttachments(imagePaths);
 
             return ResponseEntity.ok("PDF successfully uploaded and converted.");
@@ -67,8 +68,6 @@ public class MainController {
     private String handleSinglePdfUpload(MultipartFile pdfFile) {
         try {
             return fileService.saveFile(pdfFile);
-            // Implement PDF to image conversion and save logic
-            // Add converted image paths to pdfPaths list
         } catch (IOException e) {
             handleMainControllerError("Error handling PDF upload", e);
             return null;
@@ -80,7 +79,6 @@ public class MainController {
         try {
             List<Task> sortedTasks = taskService.getAllTasksSortedByDate(sort);
             model.addAttribute("tasks", sortedTasks);
-            // The following line creates a new Task object without providing the necessary arguments.
             model.addAttribute("task", new Task(1, "Sample Task 1", "", "", "", ""));
         } catch (Exception e) {
             handleMainControllerError("Error fetching tasks", e);
@@ -152,6 +150,5 @@ public class MainController {
 
     private void handleMainControllerError(String message, Exception e) {
         logger.error(message, e);
-        // Handle the exception appropriately
     }
 }

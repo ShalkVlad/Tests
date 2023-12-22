@@ -11,11 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.Test.demo.controllers.services.TaskExporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -29,14 +30,12 @@ public class TaskController {
 
     private final List<Task> tasks = new ArrayList<>();
     private final TaskService taskService;
-    private final TaskExporter taskExporter;
 
     private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
-    public TaskController(TaskService taskService, TaskExporter taskExporter) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskExporter = taskExporter;
     }
 
     @GetMapping

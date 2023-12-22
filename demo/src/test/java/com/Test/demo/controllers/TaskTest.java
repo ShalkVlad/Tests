@@ -11,22 +11,28 @@ class TaskTest {
 
     @Test
     void testTaskConstructor() {
+        // Arrange
         Task task = new Task();
+
+        // Assert
         Assertions.assertNotNull(task.getDate());
         Assertions.assertEquals(1, task.getId());
     }
 
     @Test
     void testTaskParameterizedConstructor() {
+        // Arrange
         String title = "Sample Title";
         String description = "Sample Description";
         String categories = "Sample Categories";
         String fileAttachment = "Sample File Attachment";
 
+        // Act
         Task task = new Task(1, title, "", "", fileAttachment, "High");
         task.setDescription(description);
         task.setCategories(categories);
 
+        // Assert
         Assertions.assertEquals(title, task.getTitle());
         Assertions.assertEquals(description, task.getDescription());
         Assertions.assertEquals(categories, task.getCategories());
@@ -35,33 +41,28 @@ class TaskTest {
         Assertions.assertNotNull(task.getDate());
     }
 
-
-
     @Test
     void testTaskGettersAndSetters() {
+        // Arrange
         Task task = new Task();
 
+        // Act
         task.setTitle("Updated Title");
-        Assertions.assertEquals("Updated Title", task.getTitle());
-
         task.setDescription("Updated Description");
-        Assertions.assertEquals("Updated Description", task.getDescription());
-
         task.setCategories("Updated Categories");
-        Assertions.assertEquals("Updated Categories", task.getCategories());
-
         task.setFileAttachment("Updated File Attachment");
-        Assertions.assertEquals("Updated File Attachment", task.getFileAttachment());
-
         task.setPriority("Low");
-        Assertions.assertEquals("Low", task.getPriority());
-
         Date currentDate = new Date();
         task.setDate(currentDate);
-        Assertions.assertEquals(currentDate, task.getDate());
-
         task.setPdfAttachments(Collections.singletonList("pdfPath"));
+
+        // Assert
+        Assertions.assertEquals("Updated Title", task.getTitle());
+        Assertions.assertEquals("Updated Description", task.getDescription());
+        Assertions.assertEquals("Updated Categories", task.getCategories());
+        Assertions.assertEquals("Updated File Attachment", task.getFileAttachment());
+        Assertions.assertEquals("Low", task.getPriority());
+        Assertions.assertEquals(currentDate, task.getDate());
         Assertions.assertEquals(Collections.singletonList("pdfPath"), task.getPdfAttachments());
     }
 }
-

@@ -15,19 +15,23 @@ public class TaskService {
 
     private List<String> attachments;
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
+    // Logger for logging messages
+    public static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
+    // List to store tasks
     private final List<Task> tasks = new ArrayList<>();
 
+    // Get all tasks
     public List<Task> getAllTasks() {
         return tasks;
     }
 
+    // Add a task to the list
     public void addTask(Task task) {
         tasks.add(task);
     }
 
-
+    // Delete an image from a task
     public void deleteImageFromTask(int taskId, String imagePath) {
         Task task = getTaskById(taskId);
         if (task != null) {
@@ -35,6 +39,7 @@ public class TaskService {
         }
     }
 
+    // Update an image in a task
     public void updateImageInTask(int taskId, String oldImagePath, String newImagePath) {
         Task task = getTaskById(taskId);
         if (task != null) {
@@ -46,13 +51,14 @@ public class TaskService {
         }
     }
 
-
+    // Get tasks by category
     public List<Task> getTasksByCategory(String category) {
         return tasks.stream()
                 .filter(task -> task.getCategories().contains(category))
                 .collect(Collectors.toList());
     }
 
+    // Link images to a task
     public void linkImagesToTask(int taskId, List<String> imagePaths) {
         Task task = getTaskById(taskId);
         if (task != null) {
@@ -60,6 +66,7 @@ public class TaskService {
         }
     }
 
+    // Get all tasks sorted by title
     public List<Task> getAllTasksSortedByTitle(String sortOrder) {
         Comparator<Task> comparator = Comparator.comparing(Task::getTitle);
         if ("desc".equalsIgnoreCase(sortOrder)) {
@@ -70,7 +77,7 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-
+    // Add an attachment to a task
     public void addAttachmentToTask(int taskId, String attachment) {
         Task task = getTaskById(taskId);
         if (task != null) {
@@ -78,7 +85,7 @@ public class TaskService {
         }
     }
 
-
+    // Get a task by its ID
     public Task getTaskById(int taskId) {
         for (Task task : tasks) {
             if (task.getId() == taskId) {
@@ -88,6 +95,7 @@ public class TaskService {
         return null;
     }
 
+    // Get tasks sorted by date
     public List<Task> getTasksByDate(String sortOrder) {
         Comparator<Task> comparator = Comparator.comparing(Task::getDate);
 
@@ -100,12 +108,14 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+    // Get tasks by priority
     public List<Task> getTasksByPriority(String priority) {
         return tasks.stream()
                 .filter(task -> task.getPriority().equalsIgnoreCase(priority))
                 .collect(Collectors.toList());
     }
 
+    // Update a task
     public void updateTask(Task updatedTask) {
         Task existingTask = getTaskById(updatedTask.getId());
 
@@ -119,6 +129,7 @@ public class TaskService {
         }
     }
 
+    // Get all tasks sorted by date
     public List<Task> getAllTasksSortedByDate(String sortOrder) {
         List<Task> sortedTasks = new ArrayList<>(tasks);
         Comparator<Task> comparator = Comparator.comparing(Task::getDate);
@@ -131,6 +142,7 @@ public class TaskService {
         return sortedTasks;
     }
 
+    // Delete a task
     public void deleteTask(int taskId) {
         tasks.removeIf(task -> task.getId() == taskId);
     }

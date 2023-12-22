@@ -35,6 +35,7 @@ public class TaskRestController {
         this.taskService = taskService;
     }
 
+    // Endpoint to add a new task
     @PostMapping
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
         try {
@@ -46,6 +47,7 @@ public class TaskRestController {
         }
     }
 
+    // Endpoint to get a task by its ID
     @GetMapping("/{taskId}")
     public ResponseEntity<Task> getTaskById(@PathVariable int taskId) {
         Task task = taskService.getTaskById(taskId);
@@ -57,6 +59,7 @@ public class TaskRestController {
         }
     }
 
+    // Endpoint to update a task
     @PostMapping("/update")
     public ResponseEntity<Task> updateTask(@RequestBody Task updatedTask) {
         Task existingTask = taskService.getTaskById(updatedTask.getId());
@@ -78,12 +81,14 @@ public class TaskRestController {
         }
     }
 
+    // Endpoint to get tasks by priority
     @GetMapping("/priority/{priority}")
     public ResponseEntity<List<Task>> getTasksByPriority(@PathVariable String priority) {
         List<Task> tasks = taskService.getTasksByPriority(priority);
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
+    // Endpoint to get all tasks with optional sorting parameter
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks(@RequestParam(required = false, defaultValue = "asc") String sort) {
         try {
@@ -95,6 +100,7 @@ public class TaskRestController {
         }
     }
 
+    // Endpoint to update a task by ID
     @PutMapping("/{taskId}")
     public ResponseEntity<Task> updateTask(@PathVariable int taskId, @RequestBody Task updatedTask) {
         Task existingTask = taskService.getTaskById(taskId);
@@ -102,6 +108,7 @@ public class TaskRestController {
         return getTaskResponseEntity(updatedTask, existingTask);
     }
 
+    // Endpoint to delete a task by ID
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable int taskId) {
         Task existingTask = taskService.getTaskById(taskId);
@@ -119,20 +126,21 @@ public class TaskRestController {
         }
     }
 
+    // Endpoint to import a task from a ZIP file
     @PostMapping("/import")
     public ResponseEntity<String> importTask(@RequestParam("file") MultipartFile zipFile) {
         if (zipFile.isEmpty()) {
-            return ResponseEntity.badRequest().body("ZIP-файл пуст");
+            return ResponseEntity.badRequest().body("ZIP file is empty");
         }
 
         try {
-            // Создаем временную директорию для распаковки ZIP-архива
+            // Create a temporary directory for unpacking the ZIP archive
             Path importDir = Files.createTempDirectory("task_import");
 
-            // Распаковываем ZIP-архив
+            // Unpack the ZIP archive
             String originalFilename = zipFile.getOriginalFilename();
             if (originalFilename == null) {
-                return ResponseEntity.badRequest().body("Имя ZIP-файла равно null");
+                return ResponseEntity.badRequest().body("ZIP file name is null");
             }
 
             Path zipFilePath = importDir.resolve(originalFilename);
@@ -147,12 +155,12 @@ public class TaskRestController {
                 }
             }
 
-            // Читаем JSON-файл с информацией о задаче
+            // Read the JSON file with task information
             File jsonFile = importDir.resolve("task.json").toFile();
             ObjectMapper objectMapper = new ObjectMapper();
             Task importedTask = objectMapper.readValue(jsonFile, Task.class);
 
-            // Восстанавливаем изображения
+            // Restore images
             List<String> imagePaths;
             try (Stream<Path> imagePathStream = Files.walk(importDir)
                     .filter(path -> !Files.isDirectory(path) && !path.equals(jsonFile.toPath()))) {
@@ -161,26 +169,25 @@ public class TaskRestController {
 
             importedTask.setPdfAttachments(imagePaths);
 
-            // Добавляем задачу в систему
+            // Add the task to the system
             taskService.addTask(importedTask);
 
-            // Очищаем временные файлы
+            // Clear temporary files
             try (Stream<Path> pathStream = Files.walk(importDir).sorted(Comparator.reverseOrder())) {
                 pathStream.map(Path::toFile).forEach(file -> {
                     if (!file.delete()) {
-                        // Обработать сбой удаления, например, вывести предупреждение в лог
-                        logger.warn("Не удалось удалить файл: {}", file.getAbsolutePath());
+                        // Handle delete failure, e.g., log a warning
+                        logger.warn("Failed to delete file: {}", file.getAbsolutePath());
                     }
                 });
             }
 
             Files.deleteIfExists(importDir);
 
-            return ResponseEntity.ok("Задача успешно импортирована");
+            return ResponseEntity.ok("Task successfully imported");
         } catch (IOException e) {
-            // Замените printStackTrace() на запись в лог
-            logger.error("Ошибка импорта задачи", e);
-            return ResponseEntity.status(500).body("Ошибка импорта задачи");
+            logger.error("Error importing task", e);
+            return ResponseEntity.status(500).body("Error importing task");
         }
     }
 }

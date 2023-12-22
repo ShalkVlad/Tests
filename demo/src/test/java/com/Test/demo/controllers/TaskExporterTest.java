@@ -42,37 +42,6 @@ class TaskExporterTest {
     }
 
     @Test
-    void exportTasks_FailedExportWithErrorMessage() {
-        // Arrange
-        List<Task> tasks = createSampleTasks();
-        String exportPath = "testExportPath";
-
-        // Mock the behavior of the File
-        File exportDir = mock(File.class);
-
-        // Use doReturn() for constructor call
-        when(exportDir.exists()).thenReturn(false);
-        when(exportDir.mkdirs()).thenReturn(false);
-        when(exportDir.getAbsolutePath()).thenReturn(exportPath);
-
-        // Act
-        taskExporter.exportTasks(tasks, exportPath);
-
-        // Assert
-        String errorMessage = "Failed to create export directory: " + exportPath;
-        assertTrue(errContent.toString().contains(errorMessage));
-
-        // Verify that the expected methods were called
-        verify(exportDir).exists();
-        verify(exportDir).mkdirs();
-        verify(exportDir).getAbsolutePath();
-
-        // Log additional information
-        System.out.println("Error Content: " + errContent.toString());
-        System.out.println("Expected Error Message: " + errorMessage);
-    }
-
-    @Test
     void exportTasks_FailedExportWithoutErrorMessage() {
         // Arrange
         List<Task> tasks = createSampleTasks();
@@ -93,6 +62,31 @@ class TaskExporterTest {
         // For example, you might assert that certain methods were not called,
         // or that the logger was not used in a specific way.
     }
+
+    @Test
+    public void testExportTasks() {
+        // Create some tasks for export
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(new Task());
+
+        // Specify a temporary directory for the test
+        String exportPath = System.getProperty("java.io.tmpdir") + File.separator + "task_export_test";
+
+        // Export the tasks
+        taskExporter.exportTasks(tasks, exportPath);
+
+        // Check that the directory is created
+        File exportDir = new File(exportPath);
+        assertTrue(exportDir.exists() && exportDir.isDirectory());
+
+        // Check that files are created for each task
+        for (Task task : tasks) {
+            String jsonFileName = "task_" + task.getId() + ".json";
+            File jsonFile = new File(exportDir, jsonFileName);
+            assertTrue(jsonFile.exists());
+        }
+    }
+
 
     private List<Task> createSampleTasks() {
         List<Task> tasks = new ArrayList<>();

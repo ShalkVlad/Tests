@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -49,6 +51,9 @@ class MainControllerTest {
 
         MockMultipartFile pdfFile = new MockMultipartFile("pdfFile", "test.pdf", "application/pdf", "test data".getBytes());
         when(fileService.saveFile(any(MultipartFile.class))).thenReturn("path/to/test.pdf");
+
+        // Provide behavior for convertPdfToImages method
+        when(pdfConverter.convertPdfToImages("path/to/test.pdf")).thenReturn(Collections.singletonList("image1.jpg"));
 
         // Act and Assert using MockMvc
         mockMvc.perform(MockMvcRequestBuilders.multipart("/uploadPdf/1").file(pdfFile))
