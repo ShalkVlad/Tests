@@ -57,10 +57,6 @@ class TaskExporterTest {
 
         // Act
         taskExporter.exportTasks(tasks, exportPath);
-
-        // Assert (you may add assertions based on your requirements)
-        // For example, you might assert that certain methods were not called,
-        // or that the logger was not used in a specific way.
     }
 
     @Test

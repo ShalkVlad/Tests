@@ -4,40 +4,47 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PdfConverterTest.class)
+@ExtendWith(MockitoExtension.class)
 public class PdfConverterTest {
 
+    @Mock
+    private PDDocument mockPDDocument;
+
+    @Mock
+    private PDFRenderer mockPdfRenderer;
+
+    @InjectMocks
+    private PdfProcessor pdfConverter;
+
     @Test
-    void convertPdfToImages_ShouldReturnListOfImagePaths() throws Exception {
+    void convertPdfToImages_ShouldReturnListOfImagePaths() throws IOException, Exception {
         // Arrange
-        String pdfPath = "C:/Users/shalk/OneDrive/Рабочий стол/demo/src/test/resources/test.pdf";
-        PDDocument mockPDDocument = mock(PDDocument.class);
-        PDFRenderer mockPdfRenderer = mock(PDFRenderer.class);
+        URL resource = getClass().getClassLoader().getResource("test.pdf");
+        if (resource == null) {
+            throw new IllegalStateException("Test PDF file not found in resources.");
+        }
+        String pdfPath = new File(resource.getFile()).getAbsolutePath();
 
         // Mocking PDDocument.load() method
         File pdfFile = new File(pdfPath);
-        try {
-            when(PDDocument.load(pdfFile)).thenReturn(mockPDDocument);
-        } catch (IOException e) {
-            fail("Exception thrown while mocking PDDocument.load(): " + e.getMessage());
-        }
+        when(mockPDDocument.load(pdfFile)).thenReturn(mockPDDocument);
 
         // Mocking PDFRenderer class and setting up behavior
         whenNew(PDFRenderer.class).withArguments(mockPDDocument).thenReturn(mockPdfRenderer);
@@ -46,18 +53,10 @@ public class PdfConverterTest {
         when(mockPdfRenderer.renderImageWithDPI(any(int.class), any(float.class), any(ImageType.class)))
                 .thenReturn(mock(BufferedImage.class));
 
-        // Create an instance of PdfProcessor
-        PdfProcessor pdfConverter = new PdfProcessor();
-
         // Act
-        try {
-            List<String> result = pdfConverter.convertPdfToImages(pdfPath);
+        List<String> result = pdfConverter.convertPdfToImages(pdfPath);
 
-            // Assert
-            assertEquals(3, result.size());  // Assuming there are 3 pages in the mock PDF
-        } catch (IOException e) {
-            // Handle or log the exception appropriately
-            fail("Exception thrown during test: " + e.getMessage());
-        }
+        // Assert
+        assertEquals(3, result.size());  // Assuming there are 3 pages in the mock PDF
     }
 }
