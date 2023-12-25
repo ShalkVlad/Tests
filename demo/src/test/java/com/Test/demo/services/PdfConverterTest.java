@@ -4,10 +4,9 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,12 +15,10 @@ import java.net.URL;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static org.mockito.ArgumentMatchers.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@PrepareForTest({PDDocument.class, PDFRenderer.class})
 public class PdfConverterTest {
 
     @Mock
@@ -47,10 +44,11 @@ public class PdfConverterTest {
         when(mockPDDocument.load(pdfFile)).thenReturn(mockPDDocument);
 
         // Mocking PDFRenderer class and setting up behavior
-        whenNew(PDFRenderer.class).withArguments(mockPDDocument).thenReturn(mockPdfRenderer);
+        mockStatic(PDFRenderer.class);
+        when(PDFRenderer.class, "new", mockPDDocument).thenReturn(mockPdfRenderer);
 
         // Mocking rendering of images
-        when(mockPdfRenderer.renderImageWithDPI(any(int.class), any(float.class), any(ImageType.class)))
+        when(mockPdfRenderer.renderImageWithDPI(anyInt(), anyFloat(), any(ImageType.class)))
                 .thenReturn(mock(BufferedImage.class));
 
         // Act
