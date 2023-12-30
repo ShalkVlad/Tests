@@ -1,31 +1,59 @@
-```markdown
-# Project "NoteBook"
+# Проект "NoteBook"
 
+Добро пожаловать в проект NoteBook! Этот проект представляет собой пример приложения на Java с использованием Spring Boot.
 
-## Overview
+## Требования
 
-The "NoteBook" project is a Spring Boot application designed for task management. It allows users to upload PDF files, export tasks, and perform other task-related operations. Below is information about the project.
+- Java Development Kit (JDK) 17 или выше
+- Apache Maven 3.6 или выше
 
-## Table of Contents
+## Как начать
 
-- [Project Description](#project-description)
-- [Dependencies](#dependencies)
-- [Running the Project](#running-the-project)
-- [Test Classes](#test-classes)
-  - [MainControllerTest](#maincontrollertest)
-  - [TaskExporterTest](#taskexportertest)
-  - [TaskTest](#tasktest)
-  - [PdfConverterTest](#pdfconvertertest)
-  - [PdfProcessorTest](#pdfprocessortest)
-  - [TaskServiceTest](#taskservicetest)
+1. **Установка JDK:**
+   Убедитесь, что у вас установлена JDK версии 17 или выше. Вы можете скачать JDK [здесь](https://www.oracle.com/java/technologies/javase-downloads.html).
 
-## Project Description
+2. **Установка Maven:**
+   Убедитесь, что у вас установлен Apache Maven версии 3.6 или выше. Вы можете скачать Maven [здесь](https://maven.apache.org/download.cgi).
 
-The "NoteBook" project is developed on the Spring Boot platform and is intended for task management. Key features include uploading PDF files, exporting tasks to files, and handling tasks such as adding, updating, and deleting.
+3. **Настройка переменных среды:**
+   Установите переменную среды `JAVA_HOME`, указывающую на вашу установленную JDK.
+   ```shell
+   setx JAVA_HOME "путь_к_вашей_JDK"
+   ```
 
-## Dependencies
+4. **Клонирование репозитория:**
+   Клонируйте репозиторий: `git clone https://github.com/ваш_профиль/NoteBook.git`
 
-The project uses the following key dependencies:
+5. **Сборка проекта:**
+   Перейдите в корневую директорию проекта и выполните: `mvn clean install`
+
+6. **Запуск приложения:**
+   Запустите приложение: `mvn spring-boot:run`
+
+## Обзор
+
+Проект "NoteBook" - это приложение на Spring Boot, предназначенное для управления задачами. Он позволяет пользователям загружать файлы PDF, экспортировать задачи и выполнять другие операции, связанные с задачами. Далее представлена информация о проекте.
+
+## Содержание
+
+- [Описание проекта](#project-description)
+- [Зависимости](#dependencies)
+- [Запуск проекта](#running-the-project)
+- [Тестовые классы](#test-classes)
+    - [MainControllerTest](#maincontrollertest)
+    - [TaskExporterTest](#taskexportertest)
+    - [TaskTest](#tasktest)
+    - [PdfConverterTest](#pdfconvertertest)
+    - [PdfProcessorTest](#pdfprocessortest)
+    - [TaskServiceTest](#taskservicetest)
+
+## Описание проекта
+
+Проект "NoteBook" разработан на платформе Spring Boot и предназначен для управления задачами. Основные функции включают в себя загрузку файлов PDF, экспорт задач в файлы и обработку задач, такие как добавление, обновление и удаление.
+
+## Зависимости
+
+Проект использует следующие основные зависимости:
 
 - Spring Boot 2.6.3
 - Jakarta Servlet API 5.0.0
@@ -36,43 +64,44 @@ The project uses the following key dependencies:
 - Apache PDFBox 2.0.28
 - PowerMock 2.0.9
 - Lombok 1.18.30
-- and others (see [pom.xml](pom.xml) file)
+- и другие (см. файл [pom.xml](pom.xml))
 
-## Running the Project
+## Запуск проекта
 
-To run the project, follow these steps:
+Для запуска проекта выполните следующие шаги:
 
-1. Ensure that [Maven](https://maven.apache.org/) and [JDK](https://www.oracle.com/java/technologies/javase-downloads.html) are installed in your environment.
-2. Clone the project repository.
-3. Navigate to the project directory.
-4. Run the command: `mvn spring-boot:run`.
+1. Убедитесь, что [Maven](https://maven.apache.org/) и [JDK](https://www.oracle.com/java/technologies/javase-downloads.html) установлены в вашей среде разработки.
+2. Склонируйте репозиторий проекта.
+3. Перейдите в директорию проекта.
+4. Выполните команду: `mvn spring-boot:run`.
 
-The project will be accessible at [http://localhost:8080](http://localhost:8080).
+Проект будет доступен по адресу [http://localhost:8080](http://localhost:8080).
 
-## Test Classes
+## Тестовые классы
 
-Test classes are designed to verify the correctness of various project components. You can run the tests using your development environment or by executing the `mvn test` command.
+Тестовые классы предназначены для проверки правильности работы различных компонентов проекта. Вы можете запустить тесты с использованием вашей среды разработки или выполнить команду `mvn test`.
 
 ### MainControllerTest
 
-Tests the `MainController`, focusing on the `uploadPdf` method.
+Тестирует `MainController`, с акцентом на методе `uploadPdf`.
 
 ### TaskExporterTest
 
-Tests the `TaskExporter` service, covering the task export functionality.
+Тестирует сервис `TaskExporter`, охватывая функциональность экспорта задач.
 
 ### TaskTest
 
-Tests the model class `Task`, including constructors, getters, and setters.
+Тестирует модельный класс `Task`, включая конструкторы, геттеры и сеттеры.
 
 ### PdfConverterTest
 
-Tests the `PdfConverter` service, checking the conversion of a PDF file to images.
+Тестирует сервис `PdfConverter`, проверяя преобразование файла PDF в изображения.
 
 ### PdfProcessorTest
 
-Tests the service class `PdfProcessor`, covering the processing of PDF files.
+Тестирует сервисный класс `PdfProcessor`, охватывая обработку файлов PDF.
 
 ### TaskServiceTest
 
-Tests the service class `TaskService`, verifying various task management methods.
+Тестирует сервисный класс `TaskService`, проверяя различные методы управления задачами.
+```
