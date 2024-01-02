@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
 
-    private List<String> attachments;
-
     // Logger for logging messages
     public static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
@@ -93,19 +91,6 @@ public class TaskService {
             }
         }
         return null;
-    }
-
-    // Get tasks sorted by date
-    public List<Task> getTasksByDate(String sortOrder) {
-        Comparator<Task> comparator = Comparator.comparing(Task::getDate);
-
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            comparator = comparator.reversed();
-        }
-
-        return tasks.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
     }
 
     // Get tasks by priority
