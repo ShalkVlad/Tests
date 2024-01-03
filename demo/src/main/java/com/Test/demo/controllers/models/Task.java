@@ -1,48 +1,56 @@
-    package com.Test.demo.controllers.models;
+package com.Test.demo.controllers.models;
 
-    import lombok.Getter;
-    import lombok.Setter;
+import lombok.Getter;
+import lombok.Setter;
 
-    import java.util.Date;
-    import java.util.List;
+import java.util.Date;
+import java.util.List;
 
-    @Getter
-    public class Task {
+@Setter
+@Getter
+public class Task {
 
-        @Setter
-        private List<String> pdfAttachments;
-        private final int id;
-        @Setter
-        private String title;
-        @Setter
-        private String description;
-        @Setter
-        private String categories;
-        @Setter
-        private String fileAttachment;
-        @Setter
-        private String priority;
-        @Setter
-        private Date date;
-        @Setter
-        private boolean completed; // New field for completed status
+    // List of PDF attachments associated with the task
+    private List<String> pdfAttachments;
 
-        // Constructor with parameters
-        public Task(int id, String title, String description, String categories, String fileAttachment, String priority) {
-            this.id = id;
-            this.title = title;
-            this.description = description;
-            this.categories = categories;
-            this.fileAttachment = fileAttachment;  // Setting fileAttachment in the constructor
-            this.priority = priority;
-            this.date = new Date();
-            this.completed = false;
-        }
+    // Unique identifier for the task
+    private int id;
 
+    // Title of the task
+    private String title;
 
-        // Default constructor
-        public Task() {
-            this(1, "Sample Task 1", "", "", "", "");
-        }
+    // Description of the task
+    private String description;
 
+    // Categories associated with the task
+    private String categories;
+
+    // File attachment related to the task
+    private String fileAttachment;
+
+    // Priority level of the task
+    private String priority;
+
+    // Date associated with the task (creation or last update)
+    private Date date;
+
+    // Flag indicating whether the task is completed or not
+    private boolean completed;
+
+    // Constructor with parameters
+    public Task(int id, String title, String description, String categories, String fileAttachment, String priority) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.categories = categories;
+        this.fileAttachment = fileAttachment;  // Setting fileAttachment in the constructor
+        this.priority = priority;
+        this.date = new Date();
+        this.completed = false;
     }
+
+    // Default constructor with predefined values
+    public Task() {
+        this(1, "Sample Task 1", "", "", "", "");
+    }
+}

@@ -19,13 +19,19 @@ public class TaskService {
     // List to store tasks
     private final List<Task> tasks = new ArrayList<>();
 
+    // Variable to keep track of the last assigned ID
+    private int lastAssignedId = 0;
+
     // Get all tasks
     public List<Task> getAllTasks() {
         return tasks;
     }
 
-    // Add a task to the list
+    // Add a task to the list with an automatically generated ID
     public void addTask(Task task) {
+        // Increment the last assigned ID before assigning it to the new task
+        lastAssignedId++;
+        task.setId(lastAssignedId);
         tasks.add(task);
     }
 

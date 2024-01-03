@@ -27,7 +27,10 @@ import java.util.zip.ZipInputStream;
 @RequestMapping("/api/tasks")
 public class TaskRestController {
 
+    // Service for managing tasks
     private final TaskService taskService;
+
+    // Logger for logging messages
     private static final Logger logger = LoggerFactory.getLogger(TaskRestController.class);
 
     @Autowired
@@ -67,6 +70,7 @@ public class TaskRestController {
         return getTaskResponseEntity(updatedTask, existingTask);
     }
 
+    // Helper method to return a ResponseEntity for task update
     private ResponseEntity<Task> getTaskResponseEntity(@RequestBody Task updatedTask, Task existingTask) {
         if (existingTask != null) {
             try {

@@ -28,9 +28,13 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping("/tasks")
 public class TaskController {
 
+    // List to store tasks
     private final List<Task> tasks = new ArrayList<>();
+
+    // Service for managing tasks
     private final TaskService taskService;
 
+    // Logger for logging messages
     private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
@@ -38,6 +42,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    // Endpoint for displaying tasks
     @GetMapping
     public String showTasks(Model model) {
         model.addAttribute("tasks", taskService.getAllTasks());
@@ -45,6 +50,7 @@ public class TaskController {
         return "taskList";
     }
 
+    // Endpoint for exporting a task and its attachments as a ZIP file
     @PostMapping("/export/{taskId}")
     public ResponseEntity<byte[]> exportTask(@PathVariable int taskId) {
         Task task = taskService.getTaskById(taskId);
@@ -54,22 +60,22 @@ public class TaskController {
         }
 
         try {
-            // Создаем временную директорию для сохранения экспортированных файлов
+            // Create a temporary directory for saving exported files
             Path exportDir = Files.createTempDirectory("task_export");
 
-            // Сохраняем информацию о задаче в JSON-файл
+            // Save task information to a JSON file
             File jsonFile = new File(exportDir.toFile(), "task.json");
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(jsonFile, task);
 
-            // Копируем изображения во временную директорию
+            // Copy images to the temporary directory
             for (String imagePath : task.getPdfAttachments()) {
                 File imageFile = new File(imagePath);
                 Path destination = exportDir.resolve(imageFile.getName());
                 Files.copy(imageFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            // Создаем ZIP-архив
+            // Create a ZIP archive
             String zipFileName = "task_export_" + UUID.randomUUID() + ".zip";
             Path zipFilePath = exportDir.resolve(zipFileName);
 
@@ -83,15 +89,15 @@ public class TaskController {
                                 Files.copy(path, zipOutputStream);
                                 zipOutputStream.closeEntry();
                             } catch (IOException e) {
-                                log.error("Ошибка при создании ZIP-архива", e);
+                                log.error("Error creating ZIP archive", e);
                             }
                         });
             }
 
-            // Читаем ZIP-архив в массив байтов
+            // Read the ZIP archive into a byte array
             byte[] zipBytes = Files.readAllBytes(zipFilePath);
 
-            // Очищаем временные файлы
+            // Clean up temporary files
             try {
                 Files.deleteIfExists(zipFilePath);
                 Files.walk(exportDir)
@@ -99,31 +105,33 @@ public class TaskController {
                         .map(Path::toFile)
                         .forEach(file -> {
                             if (!file.delete()) {
-                                log.warn("Не удалось удалить файл: {}", file.getAbsolutePath());
+                                log.warn("Failed to delete file: {}", file.getAbsolutePath());
                             }
                         });
                 Files.deleteIfExists(exportDir);
             } catch (IOException e) {
-                log.error("Ошибка при удалении временных файлов", e);
+                log.error("Error deleting temporary files", e);
             }
 
-            // Возвращаем ZIP-архив как массив байтов
+            // Return the ZIP archive as a byte array
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header("Content-Disposition", "attachment; filename=" + zipFileName)
                     .body(zipBytes);
         } catch (IOException e) {
-            log.error("Ошибка при экспорте задачи", e);
+            log.error("Error exporting task", e);
             return ResponseEntity.status(500).build();
         }
     }
 
+    // Endpoint for adding a new task
     @PostMapping("/add")
     public String addTask(@ModelAttribute Task task) {
         tasks.add(task);
         return "redirect:/tasks";
     }
 
+    // Endpoint for searching a task by ID
     @GetMapping("/search/{taskId}")
     public String searchTask(@PathVariable int taskId, Model model) {
         Task foundTask = taskService.getTaskById(taskId);
@@ -132,6 +140,7 @@ public class TaskController {
         return "taskList";
     }
 
+    // Model attribute providing the list of tasks
     @ModelAttribute("tasks")
     public List<Task> getTasks() {
         return tasks;
